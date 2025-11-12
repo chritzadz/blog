@@ -35,8 +35,9 @@ export default function TocLayout({ title = "Contents", sections, parentRef, chi
     }
 
     return (
-        <div className="flex w-full h-screen gap-6">
-        <aside className={`${sidebarWidth} shrink-0 p-4 bg-gray-800`}>
+        // make the layout full viewport height so the aside can be sticky
+        <div className="flex w-full h-screen gap-6 ">
+        <aside className={`${sidebarWidth} shrink-0 h-full p-4 bg-gray-800 sticky self-start` }>
             <h3 className="text-3xl font-semibold mb-3">{title + "."}</h3>
 
             <nav className="space-y-2">
@@ -61,7 +62,8 @@ export default function TocLayout({ title = "Contents", sections, parentRef, chi
             </nav>
         </aside>
 
-        <main className="flex-1 p-6 rounded-md">{children}</main>
+        {/* make main scrollable so the sidebar remains visible (sticky) */}
+        <main className="flex-1 p-6 rounded-md overflow-auto">{children}</main>
         </div>
     );
 }
