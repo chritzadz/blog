@@ -4,9 +4,9 @@ export default function NotepadUI() {
     return (
         <div className="w-full max-w-4xl bg-white shadow-md border-t-gray-700 border-l-gray-700 border-r-gray-700 rounded-md overflow-hidden">
             {/* Upper tab*/}
-            <div className="flex items-center bg-gray-400 pt-3">
+            <div className="flex items-center bg-[#57564F] pt-3">
                 <div className="bg-white">
-                    <div className="rounded-br-md h-7 px-3 py-1 bg-gray-400 flex items-center">
+                    <div className="rounded-br-md h-7 px-3 py-1 bg-[#57564F] flex items-center">
                         <Notebook size={14}></Notebook>
                     </div>
                 </div>
@@ -14,7 +14,7 @@ export default function NotepadUI() {
                     <p className="text-xs font-bold text-black">Introduction.txt</p>
                 </div>
                 <div className="bg-white">
-                    <div className="rounded-bl-md px-3 py-1 bg-gray-400">
+                    <div className="rounded-bl-md px-3 py-1 bg-[#57564F]">
                         <p className="text-sm">+</p>
                     </div>
                 </div>
@@ -33,24 +33,42 @@ export default function NotepadUI() {
                 {/* Editor area - non-functional visual only */}
                 <div className="bg-white border border-gray-200">
                     <div
-                        className="w-full h-50 p-2 text-sm bg-white font-serif text-gray-900 flex"
+                        className="w-full h-40 p-2 text-sm bg-white font-serif text-gray-900 flex"
                         style={{ fontFamily: '"Consolas", Times, serif' }}
                     >
                         {`
-                        hello i am chris! welcome to my personal blog. the purpose of this web/blog/portfolio is to document all my learnings
-                        as a computer science students. no specific domain knowledge here, but in contrast, i will try to cover as many cs related
-                        topics i can (if i found it interesting enough or courses i took in school). hence, i named the web as my personal blog, rather than
-                        portfolio. i will make my explanation as simple as possible and will definitely do a lot of analogy that i think works in understanding the flifthy
-                        concept in cs. enjoy the blog!
+                            hello i am chris! welcome to my personal blog. the purpose of this web/blog/portfolio is to document all my learnings
+                            as a computer science student. no specific domain knowledge here, but in contrast, i will try to cover as many cs related
+                            topics i can (if i found it interesting enough or courses i took in school). hence, i named the web as my personal blog, rather than
+                            portfolio. i will make my explanation as simple as possible and will definitely do a lot of analogy that i think works in understanding the filfthy
+                            concept in cs. enjoy the blog!
                         `
                         }
-                        </div>
-                        <div
-                        className="w-full h-30 p-2 text-sm bg-white font-serif text-gray-900 flex"
+                    </div>
+                    <div
+                        className="w-full h-20 p-2 text-sm bg-white font-serif text-gray-900 flex"
                         style={{ fontFamily: '"Consolas", Times, serif' }}
-                        >
+                    >
                         {`
-                        P.S. there is a sneaky projects tab which you can see which is for my portfolio. hey! i need it for my graduate jobs :)
+                            P.S. there is a sneaky projects tab which you can see which is for my portfolio. hey! i need it for my graduate jobs :)
+                        `
+                        }
+                    </div>
+                    <div
+                        className="w-full h-20 p-2 text-sm bg-white font-serif text-gray-900 flex"
+                        style={{ fontFamily: '"Consolas", Times, serif' }}
+                    >
+                        {`
+                            and yeah do not talk about the ui in this web, i am trying to make a blog not a museum :)
+                        `
+                        }
+                    </div>
+                    <div
+                        className="w-full h-20 p-2 text-sm bg-white font-serif text-gray-900 flex"
+                        style={{ fontFamily: '"Consolas", Times, serif' }}
+                    >
+                        {`
+                            oh yeah, i like to list out everything using notepad. feels more personal.
                         `
                         }
                     </div>
