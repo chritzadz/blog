@@ -2,7 +2,7 @@
 
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Props = {
     text: string;
@@ -21,7 +21,7 @@ export default function NextCard({ text, href, className = "", ariaLabel }: Prop
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >
-        <div className={`w-1/2 flex items-center justify-between ${className}`}>
+        <div className={`md:w-full sm:w-full lg:w-1/2 flex items-center justify-between ${className}`}>
             <div className="text-sm text-white">{text}</div>
             <ArrowUpRight></ArrowUpRight>
         </div>

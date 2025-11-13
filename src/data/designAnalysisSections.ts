@@ -16,9 +16,8 @@ export const sections: Section[] = [
         id: "greedy",
         title: "Greedy",
         items: [
-            {id: "background", title: "Background"},
             { id: "basic-idea", title: "Basic Idea" },
-            { id: "shortest-job-first", title: "Shorted Job " },
+            { id: "interval-scheduling", title: "Interval Scheduling" },
         ],
     },
     {
