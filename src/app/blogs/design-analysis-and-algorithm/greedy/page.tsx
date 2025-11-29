@@ -121,16 +121,44 @@ export default function Greedy() {
                                     Here, we arrived to the appropriate greedy score. By taking the one that finished first, we could output the maximum number of jobs.
                                     By considering the finish time, we are indirectly put into account the start time start time too (why? because f >= s). Additionally, we are eliminating the
                                     jobs that collides, by taking the next job that starts right after the current job's finish time. But how can we proof this? I will give an example of the case, and then
-                                    proceedon how to proof greedy algorithms.
+                                    proceed on how to proof greedy algorithms.
                                 `
                             }
                         </p>
                     </SubcontentBox>
+                    <h1 className="text-xl mt-4">Example</h1>
+                    <QuoteBox className="my-8">
+                        <p>
+                            {
+                                `
+                                    Let J be a set of job (si, fi), such that si is the start time and fi is the finish time,
+                                    where the jobs are (1,4), (3,5), (0,6), (3,9), (5,9), (8,11), (8,12), (12,16).
+                                `
+                            }
+                        </p>
+                    </QuoteBox>
+                    <p className="mt-4">
+                        {
+                            `
+                                Now, first  let us use...
+                            `
+                        }
+                    </p>
                 </ArticleSection>
                 <div className="w-1/2">
                     {/* for comments if any */}
                 </div>
             </div>
+
+            <div className="">
+                <ArticleSection id="test" title="Proofing">
+
+                </ArticleSection>
+                <div className="w-1/2">
+                    {/* for comments if any */}
+                </div>
+            </div>
+
 
             <NextCard className="mt-12" text={"Next: Divide and Conquer"} href={nextHref} />
         </div>
