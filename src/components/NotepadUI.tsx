@@ -4,7 +4,7 @@ export default function NotepadUI() {
     return (
         <div className="w-full max-w-4xl bg-white shadow-md border-t-gray-700 border-l-gray-700 border-r-gray-700 rounded-md overflow-hidden">
             {/* Upper tab*/}
-            <div className="flex items-center bg-[#57564F] pt-3">
+            {/* <div className="flex items-center bg-[#57564F] pt-3">
                 <div className="bg-white">
                     <div className="rounded-br-md h-7 px-3 py-1 bg-[#57564F] flex items-center">
                         <Notebook size={14}></Notebook>
@@ -18,7 +18,7 @@ export default function NotepadUI() {
                         <p className="text-sm">+</p>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* Menu bar */}
             <div>
