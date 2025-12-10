@@ -29,8 +29,11 @@ const WindowsWindow: React.FC<WindowsWindowProps> = ({
   active
 }) => {
   const [position, setPosition] = useState(initialPosition);
+  const [size, setSize] = useState({ width: 600, height: 400 });
   const [isDragging, setIsDragging] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const windowRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -47,6 +50,17 @@ const WindowsWindow: React.FC<WindowsWindowProps> = ({
     }
   };
 
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsResizing(true);
+    setResizeStart({
+      x: e.clientX,
+      y: e.clientY,
+      width: size.width,
+      height: size.height,
+    });
+  };
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (isDragging) {
@@ -55,13 +69,20 @@ const WindowsWindow: React.FC<WindowsWindowProps> = ({
           y: e.clientY - dragOffset.y,
         });
       }
+      if (isResizing) {
+        setSize({
+          width: Math.max(300, resizeStart.width + (e.clientX - resizeStart.x)),
+          height: Math.max(200, resizeStart.height + (e.clientY - resizeStart.y)),
+        });
+      }
     };
 
     const handleMouseUp = () => {
       setIsDragging(false);
+      setIsResizing(false);
     };
 
-    if (isDragging) {
+    if (isDragging || isResizing) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
     }
@@ -70,7 +91,7 @@ const WindowsWindow: React.FC<WindowsWindowProps> = ({
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging, dragOffset]);
+  }, [isDragging, isResizing, dragOffset, resizeStart]);
 
   if (!open) return <></>;
   if (!active) return <></>
@@ -84,9 +105,10 @@ const WindowsWindow: React.FC<WindowsWindowProps> = ({
       style={{
         left: position.x,
         top: position.y,
-        width: "600px",
-        minHeight: "400px",
-        maxHeight: "80vh",
+        width: size.width,
+        height: size.height,
+        minHeight: "200px",
+        maxHeight: "90vh",
       }}
       onMouseDown={() => onFocus && onFocus()}
     >
@@ -124,6 +146,12 @@ const WindowsWindow: React.FC<WindowsWindowProps> = ({
       <div className="flex-1 overflow-auto bg-white/95 backdrop-blur-sm">
         {children}
       </div>
+
+      {/* Resize Handle */}
+      <div
+        className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize z-50"
+        onMouseDown={handleResizeStart}
+      />
     </div>
   );
 };

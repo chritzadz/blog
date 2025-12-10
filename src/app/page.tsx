@@ -8,6 +8,7 @@ import WindowsWindow from "@/components/window/WindowsWindow";
 import { FileText } from "lucide-react";
 import { useState } from "react";
 import App from "next/app";
+import FolderUI from "@/components/FolderUI";
 
 export default function Home() {
   /*
@@ -22,6 +23,8 @@ export default function Home() {
 
   const [isNotepadOpen, setIsNotepadOpen] = useState<boolean>(true);
   const [isNotepadActive, setIsNotepadActive] = useState<boolean>(true);
+  const [isFolderOpen, setIsFolderOpen] = useState<boolean>(true);
+  const [isFolderActive, setIsFolderActive] = useState<boolean>(true);
 
   const clickedNotepadIcon = () => {
     if (isNotepadOpen){
@@ -31,9 +34,24 @@ export default function Home() {
     }
   };
 
+  const clickedFolderIcon = () => {
+    if (isFolderOpen){
+      setIsFolderActive(!isFolderActive);
+    } else {
+      setIsFolderOpen(!isFolderOpen);
+    }
+  };
+
   
   return (
-    <WindowScreen clickedNotepadIcon={clickedNotepadIcon} notepadOpen={isNotepadOpen} notepadActive={isNotepadActive}>
+    <WindowScreen 
+      clickedNotepadIcon={clickedNotepadIcon}
+      notepadOpen={isNotepadOpen}
+      notepadActive={isNotepadActive}
+      clickedFolderIcon={clickedFolderIcon}
+      folderOpen={isFolderOpen}
+      folderActive={isFolderActive}
+    >
       <div className="relative flex h-screen w-full items-center justify-center flex-col font-sans bg-primary-gray">
         <div className="p-5 w-1/3">
           <h1 className="text-5xl flex justify-start">christiandumanauw</h1>
@@ -41,9 +59,20 @@ export default function Home() {
         </div>
         <div>
           <WindowsWindow
+            title="Folder"
+            icon={Folder}
+            initialPosition={{ x: 400, y: 100 }}
+            open={isFolderOpen}
+            active={isFolderActive}
+            onClose={() => setIsFolderOpen(false)}
+            onMinimize={clickedFolderIcon}
+          >
+            <FolderUI></FolderUI>
+          </WindowsWindow>
+          <WindowsWindow
             title="Introduction.txt"
             icon={Notebook}
-            initialPosition={{ x: 200, y: 150 }}
+            initialPosition={{ x: 500, y: 150 }}
             open={isNotepadOpen}
             active={isNotepadActive}
             onClose={() => setIsNotepadOpen(false)}
