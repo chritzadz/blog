@@ -140,7 +140,26 @@ export default function Greedy() {
                     <p className="mt-4">
                         {
                             `
-                                Now, first  let us use...
+                                Now, first let us sort the jobs by fi, such that fi is the finish time of each job.
+                                We would get, (1, 4), (3, 5), (0, 6), (3,9), (5,9), (8,11), (8,12), (12,16). And we would just 
+                                iterate through out the whole array, and grab whenever it is convenient (or in this case compatible).
+                            `
+                        }
+                    </p>
+                    <p className="mt-4">{`1. Choose (1, 4)`}</p>
+                    <p className="mt-4">{`2. Skip (3, 5) -> because the last job that we picked finished at 4, hence we need to find a job that starts at or after 4`}</p>
+                    <p className="mt-4">{`3. Skip (0, 6)`}</p>
+                    <p className="mt-4">{`3. Skip (3, 9)`}</p>
+                    <p className="mt-4">{`4. Choose (5, 9) -> here the job starts at 5, while the first we chose ends in (4)`}</p>
+                    <p className="mt-4">{`5. Skip (8, 11)`}</p>
+                    <p className="mt-4">{`6. Skip (8, 12)`}</p>
+                    <p className="mt-4">{`7. Choose (12, 16) -> it starts after 9`}</p>
+                    <p className="mt-4">
+                        {
+                            `
+                                Here we could see that S = {(1, 4), (5, 9), (12, 16)}, |S| = 3. This is the maximum amount of jobs that is compatible. The set itself
+                                is not mutually exclusive such that S' = {(3, 5), (8, 12), (12, 16)} has also 3 mutually compatible jobs. All I know, is that we only care about the 
+                                number of jobs not the actualy subset of the job. Keeping this in mind will help in proving the algorithm. 
                             `
                         }
                     </p>
@@ -151,7 +170,87 @@ export default function Greedy() {
             </div>
 
             <div className="">
-                <ArticleSection id="test" title="Proofing">
+                <ArticleSection id="proof-approaches" title="Greedy Proof Approaches">
+                    <p className="mt-4">
+                        {
+                            `
+                                Proving greedy algorithm is actually quite simple. One simple argument that is fairly common to use
+                                is using the Exchange Argument. Basically, we are trying to prove greedy algorithm optimality by showing that
+                                for another non-greedy optimal solution, it can be change to greedy such that |G| = |O|. G here the greedy output while O is another optimal 
+                                optimal solution that is not greedy.
+                            `
+                        }
+                    </p>
+                    <p className="mt-4">
+                        {
+                            `
+                                When proving by exchange argument, always start by defining the two sets that is in the greedy algorithm:
+                            `
+                        }
+                    </p>
+                    <QuoteBox className="my-8">
+                        <p>
+                            {`
+                                let G be the greedy output of the set of jobs. let O be another optimal solution of the set of jobs.
+                            `}
+                        </p>
+                    </QuoteBox>
+                    <p className="mt-4">
+                        {
+                            `
+                                Then, we are trying to imagine how the output would look like. We know that greedy sorts the job in ascending
+                                order by the finish time. Hence, we know that g1 < g2 < g3 < ... < gn.
+                                Similarly, we could say the same for O, such that o1 < o2 < o3 < ... < om.
+                                
+                                Here we must let gk != ok, because optimal should be different from greedy. What we know is that because of greedy, g1 start time must be before oi start time.
+                                Drawing this out it would like this,
+                            `
+                        }
+                    </p>
+                    <QuoteBox className="mt-4">
+                        <p className="mt-4">
+                            {
+                                `
+                                    Let o1 = g1, o2 = g2, ..., ok != gk, ..., on = gn. By greedy, gk start < ok start.
+                                `
+                            }
+                        </p>
+                        <p className="mt-4">
+                            {
+                                `
+                                    G = ______|  gk  |_______
+                                `
+                            }
+                        </p>
+                        <p className="mt-4">
+                            {
+                                `
+                                    O = ________|  ok  |______
+                                `
+                            }
+                        </p>
+                    </QuoteBox>
+                    <p className="mt-4">
+                        {
+                            `
+                                The rest of gi and oi, should be equal, except when i = k. Now this is where the exchange can happen. If we swap ok with gk. Without losing it's generality, 
+                                for every ok != gk, we could swap ok with gk such that |O| = |G|, |O| will not increase in size. Hence we prove greedy is also optimal.
+
+                            `
+                        }
+                    </p>
+                    <p className="mt-4">
+                        {
+                            `
+                                For a rule of thumb, for any proof of greedy algorithm, you should find an array of jobs that needs to be sorted (ascending/descending), and let that be the
+                                main parameter for the proving. Exchange argument works great for any greedy algorithm that maintains an array. Once we have that, proving that |O| = |G| will just require a little visualization,
+                                or a little bit of math. One thing we should keep note that when we are doing the swap, opt must be the same or improve.
+
+                            `
+                        }
+                    </p>
+                </ArticleSection>
+                <ArticleSection id="partition-interval-scheduling" title="Minimum Partition Interval Scheduling">
 
                 </ArticleSection>
                 <div className="w-1/2">
