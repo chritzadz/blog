@@ -14,6 +14,8 @@ interface WindowsWindowProps {
   onFocus?: () => void;
   onClose?: () => void;
   onMinimize?: () => void;
+  zIndex?: number;
+  onClick?: () => void;
 }
 
 const WindowsWindow: React.FC<WindowsWindowProps> = ({
@@ -26,7 +28,9 @@ const WindowsWindow: React.FC<WindowsWindowProps> = ({
   onMinimize,
   open,
   icon: Icon,
-  active
+  active,
+  zIndex,
+  onClick
 }) => {
   const [position, setPosition] = useState(initialPosition);
   const [size, setSize] = useState({ width: 600, height: 400 });
@@ -100,16 +104,19 @@ const WindowsWindow: React.FC<WindowsWindowProps> = ({
     <div
       ref={windowRef}
       className={`absolute flex flex-col bg-white rounded-lg shadow-xl overflow-hidden ${
-        isActive ? "z-50 shadow-2xl ring-1 ring-black/5" : "z-10 opacity-95"
+        isActive ? "shadow-2xl ring-1 ring-black/5" : "opacity-95"
       }`}
       style={{
         left: position.x,
+        top: position.y,
+        zIndex: zIndex ?? (isActive ? 50 : 10),
         top: position.y,
         width: size.width,
         height: size.height,
         minHeight: "200px",
         maxHeight: "90vh",
       }}
+      onClick={onClick}
       onMouseDown={() => onFocus && onFocus()}
     >
       {/* Title Bar */}

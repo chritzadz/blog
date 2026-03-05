@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import WindowIcon from "../windows/WindowIcon";
-import { Columns2, Folder, House, NotepadText } from "lucide-react";
+import { Columns2, Folder, House, Navigation2, NotepadText } from "lucide-react";
 import WindowSearch from "../windows/WindowSearch";
 
 type WindowScreenProps = {
@@ -11,16 +11,22 @@ type WindowScreenProps = {
   clickedFolderIcon: () => void;
   folderOpen: boolean;
   folderActive: boolean;
+  clickedIdeIcon: () => void;
+  ideOpen: boolean;
+  ideActive: boolean;
 };
 
-export default function WindowScreen({ 
+export default function WindowScreen({
   children,
   clickedNotepadIcon,
   notepadActive,
   notepadOpen,
   clickedFolderIcon,
   folderActive,
-  folderOpen
+  folderOpen,
+  clickedIdeIcon,
+  ideOpen,
+  ideActive
 }: WindowScreenProps) {
   return (
     <div className="relative w-full h-screen bg-black">
@@ -34,6 +40,7 @@ export default function WindowScreen({
 				<WindowIcon Icon={Columns2}></WindowIcon>
 				<WindowIcon Icon={Folder} onClick={clickedFolderIcon} openState={folderOpen} activeState={folderActive}></WindowIcon>
 				<WindowIcon Icon={NotepadText} onClick={clickedNotepadIcon} openState={notepadOpen} activeState={notepadActive}></WindowIcon>
+        <WindowIcon Icon={Navigation2} onClick={clickedIdeIcon} openState={ideOpen} activeState={ideActive}></WindowIcon>
       </div>
     </div>
   );
