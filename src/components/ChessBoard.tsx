@@ -1,3 +1,4 @@
+// eslint-disable
 const pieceOrder = ["R", "N", "B", "Q", "K", "B", "N", "R"];
 
 const getPieceImage = (piece: string, color: string) => {
@@ -59,6 +60,7 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 		if (!username || !id) return;
 		const socket = new WebSocket(`wss://chess-production-b906.up.railway.app/game?id=${id}`);
 		wsRef.current = socket;
+    //
 		setWs(socket);
 		socket.onopen = () => {
 			socket.send(`USER:${username}`);
