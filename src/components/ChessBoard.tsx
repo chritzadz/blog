@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 
 const pieceOrder = ["R", "N", "B", "Q", "K", "B", "N", "R"];
@@ -44,6 +45,7 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 	const wsRef = useRef<WebSocket | null>(null);
 	const [fen, setFen] = useState<string>("");
   const [color, setColor] = useState<string>("White");
+  const [winner, setWinner] = useState<string>("");
 
 	useEffect(() => {
 		if (!username || !id) return;
@@ -61,6 +63,9 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 			}
       if (event.data && typeof event.data === "string" && event.data.includes("REGISTERED")){
         setColor(event.data.split(":")[1]);
+      } 
+      if (event.data && typeof event.data === "string" && event.data.includes("END")){
+        setWinner(event.data.split(":")[1])
       }
 		};
 		socket.onerror = (err) => {
@@ -102,6 +107,13 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 	}, [fen]);
 
 	const sendMove = () => {
+		if (winner !== "" && (winner === "Black" || winner === "White")) {
+			// Finish game, end game
+			if (wsRef.current) {
+				wsRef.current.close();
+			}
+			return;
+		}
 		if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN && move) {
 			wsRef.current.send(move);
 			setMove("");
@@ -122,7 +134,7 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 				/>
 				<button
 					onClick={sendMove}
-					disabled={!move}
+					disabled={!move || (winner !== "" && (winner === "Black" || winner === "White"))}
 					className="px-4 py-2 bg-blue-600 text-white rounded font-semibold shadow"
 				>Send Move</button>
 			</div>
@@ -134,13 +146,13 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 					))}
 				</ul>
 			</div> */}
-			<div className="mt-6">
-				{color === "White" ? (
-					<BoardWhite board={board} />
-				) : color === "Black" ? (
-					<BoardBlack board={board} />
-				) : null}
-			</div>
+      <div className="mt-6">
+        {color === "White" ? (
+          <BoardWhite board={board} />
+        ) : color === "Black" ? (
+          <BoardBlack board={board} />
+        ) : null}
+      </div>
 		</div>
 	);
 
@@ -155,10 +167,13 @@ const BoardWhite = ({ board }: { board: any[][] }) => (
 					className="w-12 h-12 relative"
 				>
 					{cell && (
-						<img
+						<Image
 							src={getPieceImage(cell.piece, cell.color)}
 							alt={cell.color + " " + cell.piece}
+							width={44}
+							height={44}
 							className="w-11 h-11 m-0.5"
+							priority
 						/>
 					)}
 				</div>
@@ -176,10 +191,13 @@ const BoardBlack = ({ board }: { board: any[][] }) => (
 					className="w-12 h-12 relative"
 				>
 					{cell && (
-						<img
+						<Image
 							src={getPieceImage(cell.piece, cell.color)}
 							alt={cell.color + " " + cell.piece}
+							width={44}
+							height={44}
 							className="w-11 h-11 m-0.5"
+							priority
 						/>
 					)}
 				</div>
