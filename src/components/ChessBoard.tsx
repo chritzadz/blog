@@ -126,14 +126,14 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 					className="px-4 py-2 bg-blue-600 text-white rounded font-semibold shadow"
 				>Send Move</button>
 			</div>
-			<div className="mt-2 max-h-32 overflow-y-auto bg-gray-100 border border-gray-300 p-2 w-96">
+			{/* <div className="mt-2 max-h-32 overflow-y-auto bg-gray-100 border border-gray-300 p-2 w-96">
 				<b>Messages:</b>
 				<ul className="pl-4">
 					{messages.map((msg, idx) => (
 						<li key={idx}>{msg}</li>
 					))}
 				</ul>
-			</div>
+			</div> */}
 			<div className="mt-6">
 				{color === "White" ? (
 					<BoardWhite board={board} />
