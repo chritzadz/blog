@@ -1,0 +1,1 @@
+Place chess piece images here: king.png, queen.png, rook.png, bishop.png, knight.png, pawn.png for both black and white. Also add board.png for the chess board background.
