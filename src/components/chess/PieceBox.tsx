@@ -60,7 +60,7 @@ export const PieceBox = ({id, rIdx, cIdx, cell, strPathImage, highlighted, onReq
       {cell && (
         <div ref={ref} className={`cursor-grab flex items-center justify-center ${isDragging ? "bg-red-100" : ""}`} style={{width: '100%', height: '100%'}}>
           <Image
-            src={strPathImage}
+            src={strPathImage || "/chess/default.png"}
             alt={cell.color + " " + cell.piece}
             width={44}
             height={44}
