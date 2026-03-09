@@ -44,8 +44,9 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 	const [move, setMove] = useState("");
 	const wsRef = useRef<WebSocket | null>(null);
 	const [fen, setFen] = useState<string>("");
-  const [color, setColor] = useState<string>("White");
-  const [winner, setWinner] = useState<string>("");
+	const [color, setColor] = useState<string>("White");
+	const [winner, setWinner] = useState<string>("");
+	const [error, setError] = useState<string>("");
 
 	useEffect(() => {
 		if (!username || !id) return;
@@ -65,8 +66,12 @@ const ChessBoard = ({id}: ChessBoardProps) => {
         setColor(event.data.split(":")[1]);
       } 
       if (event.data && typeof event.data === "string" && event.data.includes("END")){
-        setWinner(event.data.split(":")[1])
+        setWinner(event.data.split(":")[1]);
       }
+			if (event.data && typeof event.data === "string" && event.data.includes("ERROR")){
+				const errMsg = event.data.split(":")[1]?.trim() || "Illegal move";
+				setError(errMsg);
+			}
 		};
 		socket.onerror = (err) => {
 			setMessages((prev) => [...prev, "WebSocket error"]);
@@ -124,11 +129,19 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 		<div className="flex flex-col items-center mt-4">
 			<div className="mb-2 text-lg">Username: <b>{username}</b></div>
 			<div className="mb-4 text-lg">Color: <b>{color}</b></div>
+			{error && (
+				<div className="mb-2 text-red-600 font-semibold bg-red-100 border border-red-300 rounded px-3 py-2 w-96 text-center">
+					{error}
+				</div>
+			)}
 			<div className="flex items-center gap-2 mb-4">
 				<input
 					type="text"
 					value={move}
-					onChange={e => setMove(e.target.value)}
+					onChange={e => {
+						setMove(e.target.value);
+						if (error) setError("");
+					}}
 					placeholder="Enter move (e.g. e2e4)"
 					className="px-3 py-2 border rounded"
 				/>
@@ -138,14 +151,6 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 					className="px-4 py-2 bg-blue-600 text-white rounded font-semibold shadow"
 				>Send Move</button>
 			</div>
-			{/* <div className="mt-2 max-h-32 overflow-y-auto bg-gray-100 border border-gray-300 p-2 w-96">
-				<b>Messages:</b>
-				<ul className="pl-4">
-					{messages.map((msg, idx) => (
-						<li key={idx}>{msg}</li>
-					))}
-				</ul>
-			</div> */}
       <div className="mt-6">
         {color === "White" ? (
           <BoardWhite board={board} />

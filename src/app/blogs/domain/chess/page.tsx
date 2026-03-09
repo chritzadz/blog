@@ -88,6 +88,11 @@ export default function ChessGame() {
                     <ChessBoard id={gameId}/>
                 </div>
             )}
+            {
+                joinError && (
+                    <div>{joinError}</div>
+                )
+            }
         </div>
     );
 }
