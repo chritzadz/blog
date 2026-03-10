@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { X, Minus, Square } from "lucide-react";
 
 interface WindowsWindowProps {
+  className?: string;
   title: string;
   children: React.ReactNode;
   initialPosition?: { x: number; y: number };
@@ -17,6 +18,7 @@ interface WindowsWindowProps {
 }
 
 const WindowsWindow: React.FC<WindowsWindowProps> = ({
+  className,
   title,
   children,
   initialPosition = { x: 100, y: 100 },
@@ -99,9 +101,9 @@ const WindowsWindow: React.FC<WindowsWindowProps> = ({
   return (
     <div
       ref={windowRef}
-      className={`absolute flex flex-col bg-white rounded-lg shadow-xl overflow-hidden ${
+      className={`absolute flex flex-col rounded-lg shadow-xl overflow-hidden ${
         isActive ? "z-50 shadow-2xl ring-1 ring-black/5" : "z-10 opacity-95"
-      }`}
+      } ${ className ? className : "bg-white"}`}
       style={{
         left: position.x,
         top: position.y,

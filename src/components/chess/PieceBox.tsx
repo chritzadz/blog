@@ -4,14 +4,16 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 
 
-export const PieceBox = ({id, rIdx, cIdx, cell, strPathImage, highlighted, onRequestMoves}: {
+export const PieceBox = ({id, rIdx, cIdx, cell, strPathImage, highlighted, onRequestMoves, moves, onDragStart}: {
   id: string,
   rIdx: number,
   cIdx: number,
-  cell: {color: string, piece:string},
+  cell: {color: string, piece:string} | null,
   strPathImage: string | undefined,
   highlighted?: boolean,
-  onRequestMoves?: (square: string) => void
+  onRequestMoves?: (moves: string[]) => void,
+  onDragStart?: () => void;
+  moves: string[]
 }) => {
   const { ref, isDragging } = useDraggable({ id });
   const [selected, setSelected] = useState(false);
@@ -44,9 +46,14 @@ export const PieceBox = ({id, rIdx, cIdx, cell, strPathImage, highlighted, onReq
   }, [closestSquare, isDragging, notation]);
 
   const handleClick = () => {
-    if (cell) setSelected(!selected);
+    console.log("PieceBox CLICKED, legalMoves:", moves);
     if (onRequestMoves) {
-      onRequestMoves(notation);
+      if (moves && moves.length > 0) {
+        onRequestMoves(moves);
+      } else {
+        // Only clear highlights if no legal moves
+        onRequestMoves([]);
+      }
     }
   };
 
@@ -54,17 +61,21 @@ export const PieceBox = ({id, rIdx, cIdx, cell, strPathImage, highlighted, onReq
     <div
       key={rIdx + "-" + cIdx}
       ref={cellRef}
-      className={`w-12 h-12 relative flex items-center justify-center ${selected ? "bg-red-100" : ""} ${highlighted ? "ring-4 ring-yellow-400" : ""}`}
+      className={`aspect-square w-full h-full min-w-10 min-h-10 max-w-full max-h-full relative flex items-center justify-center ${selected ? "bg-red-100" : ""} ${highlighted ? "ring-4 ring-yellow-400" : ""}`}
       onClick={handleClick}
+      onDragStart={() => {
+        console.log("PieceBox DRAG, legalMoves:", moves);
+        if (onDragStart) onDragStart();
+      }}
     >
       {cell && (
         <div ref={ref} className={`cursor-grab flex items-center justify-center ${isDragging ? "bg-red-100" : ""}`} style={{width: '100%', height: '100%'}}>
           <Image
             src={strPathImage || "/chess/default.png"}
             alt={cell.color + " " + cell.piece}
-            width={44}
-            height={44}
-            className="w-11 h-11"
+            width={40}
+            height={40}
+            className="w-full h-full"
             priority
           />
           {isDragging && closestSquare && (

@@ -11,9 +11,12 @@ type WindowScreenProps = {
   clickedFolderIcon: () => void;
   folderOpen: boolean;
   folderActive: boolean;
+  clickedChessIcon: () => void;
+  chessOpen: boolean;
+  chessActive: boolean;
 };
 
-export default function WindowScreen({ 
+export default function WindowScreen({
   children,
   clickedNotepadIcon,
   notepadActive,
