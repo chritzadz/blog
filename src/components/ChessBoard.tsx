@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PieceBox } from "./chess/PieceBox";
 import { DragDropProvider } from "@dnd-kit/react";
 import { Cell } from "./chess/Cell";
@@ -71,21 +71,27 @@ const ChessBoard = ({id}: ChessBoardProps) => {
       }
       console.log("Parsed board:", newBoard);
       setBoard(newBoard);
-      setHighlightedSquares([]);
     } catch (e) {
       console.error("FEN parse error:", e);
     }
   }, [fen]);
 
-  const requestMoves = (moves: string[]) => {
+  const requestMoves = useCallback((moves: string[]) => {
     setHighlightedSquares(moves);
-  };
+  }, []);
+
+  const handleDragStart = useCallback((event: any) => {
+    if (event.moves && Array.isArray(event.moves)) {
+      setHighlightedSquares(event.moves);
+      console.log("DragStart for", event.notation, "legalMoves:", event.moves);
+    }
+  }, []);
 
   if (!id) {
     return (
       <div className="flex flex-col w-full items-center p-3">
         <div className="mt-6">
-          <BoardWhite board={initialBoard()} highlightedSquares={[]} requestMoves={() => {}} moves={[]} />
+          <BoardWhite board={initialBoard()} highlightedSquares={[]} requestMoves={() => {}} moves={[]} handleDragStart={() => {}}/>
         </div>
       </div>
     );
@@ -93,34 +99,37 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 
 	return (
 		<DragDropProvider
-			onDragEnd={(event) => {
-				if (event.canceled) return;
-				const { source, target } = event.operation || {};
-				if (source && target && target.id) {
-					let moveStr = `${source.id.toString().replace("piece-","")}${target.id}`;
-					const targetSquare = moveStr.slice(-2);
-					if (!highlightedSquares.includes(targetSquare)) {
-						return;
-					}
+      onDragStart={handleDragStart}
+      onDragEnd={(event) => {
+        if (event.canceled) return;
+        const { source, target } = event.operation || {};
+        if (!source || !target || !target.id) return;
+        
+        let moveStr = `${source.id.toString().replace("piece-","")}${target.id}`;
+        const targetSquare = moveStr.slice(-2);
 
-					if (color === "Black" && moveStr.length === 4) {
-						const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
-						const flipRank = (r: string) => (9 - parseInt(r)).toString();
-						const flipFile = (f: string) => files[7 - files.indexOf(f)];
-						const from = moveStr.slice(0,2);
-						const to = moveStr.slice(2,4);
-						const flippedFrom = files.indexOf(from[0]) !== -1 ? flipFile(from[0]) + flipRank(from[1]) : from;
-						const flippedTo = files.indexOf(to[0]) !== -1 ? flipFile(to[0]) + flipRank(to[1]) : to;
-						moveStr = `${flippedFrom}${flippedTo}`;
-					}
-					if (moveStr.length === 4 && wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-						wsRef.current.send(moveStr);
-						const destNotation = moveStr.slice(2,4);
-						const destMoves = moves && Array.isArray(moves) ? moves.find(m => m.piece === destNotation)?.moves || [] : [];
-						setMove("");
-					}
-				}
-			}}
+        if (!highlightedSquares || !highlightedSquares.includes(targetSquare)) {
+          return;
+        }
+
+        if (color === "Black" && moveStr.length === 4) {
+          const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
+          const flipRank = (r: string) => (9 - parseInt(r)).toString();
+          const flipFile = (f: string) => files[7 - files.indexOf(f)];
+          const from = moveStr.slice(0,2);
+          const to = moveStr.slice(2,4);
+          const flippedFrom = files.indexOf(from[0]) !== -1 ? flipFile(from[0]) + flipRank(from[1]) : from;
+          const flippedTo = files.indexOf(to[0]) !== -1 ? flipFile(to[0]) + flipRank(to[1]) : to;
+          moveStr = `${flippedFrom}${flippedTo}`;
+        }
+        if (moveStr.length === 4 && wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          wsRef.current.send(moveStr);
+          const destNotation = moveStr.slice(2,4);
+          const destMoves = moves && Array.isArray(moves) ? moves.find(m => m.piece === destNotation)?.moves || [] : [];
+          setMove("");
+          setHighlightedSquares([]);
+        }
+      }}
 		>
 			<div className="flex flex-col w-full items-center p-3">
 				<div className="mb-1 text-md">Username: <b>{username}</b></div>
@@ -132,9 +141,9 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 				)}
         <div className="mt-6">
           {color === "White" ? (
-            <BoardWhite board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} highlightedSquares={highlightedSquares} requestMoves={requestMoves} moves={Array.isArray(moves) ? moves : []} />
+            <BoardWhite board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} highlightedSquares={highlightedSquares} requestMoves={requestMoves} moves={Array.isArray(moves) ? moves : []} handleDragStart={handleDragStart} />
           ) : color === "Black" ? (
-            <BoardBlack board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} highlightedSquares={highlightedSquares} requestMoves={requestMoves} moves={Array.isArray(moves) ? moves : []}/>
+            <BoardBlack board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} highlightedSquares={highlightedSquares} requestMoves={requestMoves} moves={Array.isArray(moves) ? moves : []} handleDragStart={handleDragStart}/>
           ) : null}
 				</div>
 			</div>
@@ -143,22 +152,22 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 
 };
 
-const BoardWhite = ({ board, highlightedSquares, requestMoves, moves }: { board: BoardType, highlightedSquares: string[], requestMoves: (moves: string[]) => void, moves: PieceMove[] | [] }) => (
+const BoardWhite = ({ board, highlightedSquares, requestMoves, moves, handleDragStart }: { board: BoardType, highlightedSquares: string[], requestMoves: (moves: string[]) => void, moves: PieceMove[], handleDragStart: (event: any) => void }) => (
   <div className="grid grid-cols-8 grid-rows-8 w-full h-full aspect-square items-center justify-center bg-cover border-2 border-gray-700 relative" style={{ backgroundImage: 'url(/chess/board.png)' }}>
     {board.map((row, rIdx) =>
       row.map((cell, cIdx) => {
         const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
         const ranks = [8,7,6,5,4,3,2,1];
         const notation = files[cIdx] + ranks[rIdx];
-        const isHighlighted = highlightedSquares.includes(notation);
+        const isHighlighted = highlightedSquares && highlightedSquares.includes(notation);
         let legalMoves: string[] = [];
         if (moves && Array.isArray(moves)) {
-          const found = moves.find(m => m.piece === notation);
+          const found = moves.find(m => m && m.piece === notation);
           legalMoves = found && Array.isArray(found.moves) ? found.moves : [];
         }
         return (
           <Cell id={notation} key={notation} className={isHighlighted ? "ring-4 ring-yellow-400" : ""}>
-            <PieceBox id={`piece-${notation}`} cIdx={cIdx} rIdx={rIdx} cell={cell} strPathImage={getPieceImage(cell?.piece || "", cell?.color || "")} moves={legalMoves} onRequestMoves={requestMoves} onDragStart={() => {requestMoves(legalMoves); console.log(legalMoves);}} />
+            <PieceBox id={`piece-${notation}`} cIdx={cIdx} rIdx={rIdx} cell={cell} strPathImage={getPieceImage(cell?.piece || "", cell?.color || "")} moves={legalMoves} onRequestMoves={requestMoves} onDragStart={handleDragStart} />
           </Cell>
         );
       })
@@ -166,7 +175,7 @@ const BoardWhite = ({ board, highlightedSquares, requestMoves, moves }: { board:
   </div>
 );
 
-const BoardBlack = ({ board, highlightedSquares, requestMoves, moves}: { board: BoardType, highlightedSquares: string[], requestMoves : (moves: string[]) => void, moves: PieceMove[] }) => (
+const BoardBlack = ({ board, highlightedSquares, requestMoves, moves, handleDragStart}: { board: BoardType, highlightedSquares: string[], requestMoves: (moves: string[]) => void, moves: PieceMove[], handleDragStart: (event: any) => void }) => (
   <div className="grid grid-cols-8 grid-rows-8 w-full h-full aspect-square items-center justify-center bg-cover border-2 border-gray-700 relative" style={{ backgroundImage: 'url(/chess/board.png)' }}>
     {board.slice().reverse().map((row: BoardCell[], rIdx: number) =>
       row.slice().reverse().map((cell: BoardCell, cIdx: number) => {
@@ -176,12 +185,12 @@ const BoardBlack = ({ board, highlightedSquares, requestMoves, moves}: { board: 
         const isHighlighted = highlightedSquares.includes(notation);
         let legalMoves: string[] = [];
         if (moves && Array.isArray(moves)) {
-          const found = moves.find(m => m.piece === notation);
+          const found = moves.find(m => m && m.piece === notation);
           legalMoves = found && Array.isArray(found.moves) ? found.moves : [];
         }
         return (
           <Cell id={notation} key={notation} className={isHighlighted ? "ring-4 ring-yellow-400" : ""}>
-            <PieceBox id={`piece-${notation}`} cIdx={cIdx} rIdx={rIdx} cell={cell} strPathImage={getPieceImage(cell?.piece || "", cell?.color || "")} moves={legalMoves} onRequestMoves={requestMoves} onDragStart={() => requestMoves(legalMoves)} />
+            <PieceBox id={`piece-${notation}`} cIdx={cIdx} rIdx={rIdx} cell={cell} strPathImage={getPieceImage(cell?.piece || "", cell?.color || "")} moves={legalMoves} onRequestMoves={requestMoves} onDragStart={handleDragStart} />
           </Cell>
         );
       })

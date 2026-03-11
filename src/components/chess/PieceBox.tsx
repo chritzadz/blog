@@ -12,7 +12,7 @@ export const PieceBox = ({id, rIdx, cIdx, cell, strPathImage, highlighted, onReq
   strPathImage: string | undefined,
   highlighted?: boolean,
   onRequestMoves?: (moves: string[]) => void,
-  onDragStart?: () => void;
+  onDragStart?: (event: any) => void;
   moves: string[]
 }) => {
   const { ref, isDragging } = useDraggable({ id });
@@ -36,7 +36,6 @@ export const PieceBox = ({id, rIdx, cIdx, cell, strPathImage, highlighted, onReq
       const rect = cellRef.current.getBoundingClientRect();
       const x = e.clientX;
       const y = e.clientY;
-      // Check if mouse is inside this cell
       if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
         if (closestSquare !== notation) setClosestSquare(notation);
       }
@@ -48,12 +47,7 @@ export const PieceBox = ({id, rIdx, cIdx, cell, strPathImage, highlighted, onReq
   const handleClick = () => {
     console.log("PieceBox CLICKED, legalMoves:", moves);
     if (onRequestMoves) {
-      if (moves && moves.length > 0) {
-        onRequestMoves(moves);
-      } else {
-        // Only clear highlights if no legal moves
-        onRequestMoves([]);
-      }
+      onRequestMoves(moves);
     }
   };
 
@@ -61,13 +55,20 @@ export const PieceBox = ({id, rIdx, cIdx, cell, strPathImage, highlighted, onReq
     <div
       key={rIdx + "-" + cIdx}
       ref={cellRef}
-      className={`aspect-square w-full h-full min-w-10 min-h-10 max-w-full max-h-full relative flex items-center justify-center ${selected ? "bg-red-100" : ""} ${highlighted ? "ring-4 ring-yellow-400" : ""}`}
+      className={`aspect-square w-full h-full min-w-10 min-h-10 max-w-full max-h-full relative flex items-center justify-center ${highlighted ? "ring-4 ring-yellow-400" : ""}`}
       onClick={handleClick}
       onDragStart={() => {
+        if (!moves || moves.length === 0) {
+          console.log("PieceBox DRAG, but moves not ready.");
+          return;
+        }
         console.log("PieceBox DRAG, legalMoves:", moves);
-        if (onDragStart) onDragStart();
+        if (onDragStart) onDragStart({ notation, moves });
       }}
     >
+      {!moves || moves.length === 0 ? (
+        <span className="absolute w-full h-full flex items-center justify-center text-xs text-gray-400">Loading moves...</span>
+      ) : null}
       {cell && (
         <div ref={ref} className={`cursor-grab flex items-center justify-center ${isDragging ? "bg-red-100" : ""}`} style={{width: '100%', height: '100%'}}>
           <Image

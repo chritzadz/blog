@@ -14,7 +14,6 @@ export function useWebSocket ({id, username} : UseWebSocketProp) {
   const [error, setError] = useState<string | null>(null);
   const [move, setMove] = useState("");
   const [moves, setMoves] = useState<PieceMove[]>([]); // PieceMove[]
-  // Board and highlightedSquares are managed in ChessBoard
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {

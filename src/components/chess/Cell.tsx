@@ -12,7 +12,7 @@ export const Cell = ({ id, children, className }: CellProps) => {
   return (
     <div
       ref={ref}
-      className={`w-full h-full min-w-[40px] min-h-[40px] max-w-full max-h-full relative flex items-center justify-center ${isDropTarget ? "bg-blue-200" : ""}` + className}
+      className={`w-full h-full min-w-10 min-h-10 max-w-full max-h-full relative flex items-center justify-center ${isDropTarget ? "bg-blue-200" : ""}` + className}
     >
       {children}
     </div>
