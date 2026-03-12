@@ -174,7 +174,7 @@ const BoardWhite = ({ board, highlightedSquares, requestMoves, moves, handleDrag
         const isHighlighted = highlightedSquares && highlightedSquares.includes(notation);
         let legalMoves: string[] = [];
         if (moves && Array.isArray(moves)) {
-          const found = moves.find(m => m && m.piece === notation && m.color && m.color.toLowerCase() === "black");
+          const found = moves.find(m => m && m.piece === notation && m.color && m.color.toLowerCase() === "white");
           legalMoves = found && Array.isArray(found.moves) ? found.moves : [];
         }
         return (
@@ -197,7 +197,7 @@ const BoardBlack = ({ board, highlightedSquares, requestMoves, moves, handleDrag
         const isHighlighted = highlightedSquares.includes(notation);
         let legalMoves: string[] = [];
         if (moves && Array.isArray(moves)) {
-          const found = moves.find(m => m && m.piece === notation && m.color && m.color.toLowerCase() === "white");
+          const found = moves.find(m => m && m.piece === notation && m.color && m.color.toLowerCase() === "black");
           legalMoves = found && Array.isArray(found.moves) ? found.moves : [];
         }
         return (
