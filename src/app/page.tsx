@@ -1,13 +1,10 @@
 "use client"
 
 import NotepadUI from "@/components/NotepadUI";
-import FeatureCard from "@/components/FeatureCard";
 import { Folder, Notebook, ChessPawn} from "lucide-react";
 import WindowScreen from "@/components/screen/WindowScreen";
 import WindowsWindow from "@/components/window/WindowsWindow";
-import { FileText } from "lucide-react";
 import { useState, useEffect } from "react";
-import App from "next/app";
 import FolderUI from "@/components/FolderUI";
 import BlogMain from "./page"; // Import your blog page component
 import ChessScreen from "@/components/chess/ChessScreen";

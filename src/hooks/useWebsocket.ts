@@ -28,6 +28,7 @@ export function useWebSocket ({id, username} : UseWebSocketProp) {
       if (event.data && typeof event.data === "string" && event.data.startsWith("MOVES:")) {
         const jsonStr = event.data.substring(event.data.indexOf(":") + 1);
         const data = JSON.parse(jsonStr);
+        console.log(data);
         if (data.pieceMoves) {
           setMoves(data.pieceMoves);
         }

@@ -39,6 +39,9 @@ const ChessBoard = ({id}: ChessBoardProps) => {
   const { wsRef, color, error, moves, fen, setMove } = useWebSocket({id, username });
   const [board, setBoard] = useState<BoardType>(initialBoard());
   const [highlightedSquares, setHighlightedSquares] = useState<string[]>([]);
+  const filteredMoves = Array.isArray(moves) && color
+    ? moves.filter(m => m.color && m.color.toLowerCase() === color.toLowerCase())
+    : [];
 
   // WebSocket connection is auto-initialized by useWebSocket
   useEffect(() => {
@@ -141,9 +144,9 @@ const ChessBoard = ({id}: ChessBoardProps) => {
 				)}
         <div className="mt-6">
           {color === "White" ? (
-            <BoardWhite board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} highlightedSquares={highlightedSquares} requestMoves={requestMoves} moves={Array.isArray(moves) ? moves : []} handleDragStart={handleDragStart} />
+            <BoardWhite board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} highlightedSquares={highlightedSquares} requestMoves={requestMoves} moves={filteredMoves} handleDragStart={handleDragStart} />
           ) : color === "Black" ? (
-            <BoardBlack board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} highlightedSquares={highlightedSquares} requestMoves={requestMoves} moves={Array.isArray(moves) ? moves : []} handleDragStart={handleDragStart}/>
+            <BoardBlack board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} highlightedSquares={highlightedSquares} requestMoves={requestMoves} moves={filteredMoves} handleDragStart={handleDragStart}/>
           ) : null}
 				</div>
 			</div>
