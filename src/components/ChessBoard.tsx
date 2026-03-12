@@ -154,7 +154,7 @@ const ChessBoard = ({id}: ChessBoardProps) => {
               board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} 
               highlightedSquares={highlightedSquares} 
               requestMoves={requestMoves} 
-              moves={filteredMoves.filter(m => m.color && m.color.toLowerCase() === "black")} 
+              moves={filteredMoves.filter(m => m.color && m.color.toLowerCase() === "white")} 
               handleDragStart={handleDragStart} 
             />
           ) : color === "Black" ? (
@@ -162,7 +162,7 @@ const ChessBoard = ({id}: ChessBoardProps) => {
               board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} 
               highlightedSquares={highlightedSquares} 
               requestMoves={requestMoves} 
-              moves={filteredMoves.filter(m => m.color && m.color.toLowerCase() === "white")} 
+              moves={filteredMoves.filter(m => m.color && m.color.toLowerCase() === "black")} 
               handleDragStart={handleDragStart} 
             />
           ) : null}
