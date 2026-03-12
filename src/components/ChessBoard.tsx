@@ -39,9 +39,15 @@ const ChessBoard = ({id}: ChessBoardProps) => {
   const { wsRef, color, error, moves, fen, setMove } = useWebSocket({id, username });
   const [board, setBoard] = useState<BoardType>(initialBoard());
   const [highlightedSquares, setHighlightedSquares] = useState<string[]>([]);
-  const filteredMoves = Array.isArray(moves) && color
-    ? moves.filter(m => m.color && m.color.toLowerCase() === color.toLowerCase())
-    : [];
+  const [filteredMoves, setFilteredMoves] = useState<PieceMove[]>([]);
+
+  useEffect(() => {
+    if (Array.isArray(moves) && color) {
+      setFilteredMoves(moves.filter(m => m.color && m.color.toLowerCase() === color.toLowerCase()));
+    } else {
+      setFilteredMoves([]);
+    }
+  }, [moves, color]);
 
   // WebSocket connection is auto-initialized by useWebSocket
   useEffect(() => {
