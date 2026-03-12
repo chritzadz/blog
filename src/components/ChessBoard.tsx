@@ -124,8 +124,6 @@ const ChessBoard = ({id}: ChessBoardProps) => {
         }
         if (moveStr.length === 4 && wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
           wsRef.current.send(moveStr);
-          const destNotation = moveStr.slice(2,4);
-          const destMoves = moves && Array.isArray(moves) ? moves.find(m => m.piece === destNotation)?.moves || [] : [];
           setMove("");
           setHighlightedSquares([]);
         }
