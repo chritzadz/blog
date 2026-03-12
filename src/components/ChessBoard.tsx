@@ -39,13 +39,16 @@ const ChessBoard = ({id}: ChessBoardProps) => {
   const { wsRef, color, error, moves, fen, setMove } = useWebSocket({id, username });
   const [board, setBoard] = useState<BoardType>(initialBoard());
   const [highlightedSquares, setHighlightedSquares] = useState<string[]>([]);
-  const [filteredMoves, setFilteredMoves] = useState<PieceMove[]>([]);
+  const [blackFilteredMoves, setBlackFilteredMoves] = useState<PieceMove[]>([]);
+  const [whiteFilteredMoves, setWhiteFilteredMoves] = useState<PieceMove[]>([]);
 
   useEffect(() => {
     if (Array.isArray(moves)) {
-      setFilteredMoves(moves);
+      setBlackFilteredMoves(moves.filter(m => m.color && m.color.toLowerCase() === "black"));
+      setWhiteFilteredMoves(moves.filter(m => m.color && m.color.toLowerCase() === "white"));
     } else {
-      setFilteredMoves([]);
+      setBlackFilteredMoves([]);
+      setWhiteFilteredMoves([]);
     }
   }, [moves]);
 
@@ -154,7 +157,7 @@ const ChessBoard = ({id}: ChessBoardProps) => {
               board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} 
               highlightedSquares={highlightedSquares} 
               requestMoves={requestMoves} 
-              moves={filteredMoves.filter(m => m.color && m.color.toLowerCase() === "white")} 
+              moves={blackFilteredMoves} 
               handleDragStart={handleDragStart} 
             />
           ) : color === "Black" ? (
@@ -162,7 +165,7 @@ const ChessBoard = ({id}: ChessBoardProps) => {
               board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} 
               highlightedSquares={highlightedSquares} 
               requestMoves={requestMoves} 
-              moves={filteredMoves.filter(m => m.color && m.color.toLowerCase() === "black")} 
+              moves={whiteFilteredMoves} 
               handleDragStart={handleDragStart} 
             />
           ) : null}
