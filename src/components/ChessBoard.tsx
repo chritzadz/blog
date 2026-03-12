@@ -39,19 +39,7 @@ const ChessBoard = ({id}: ChessBoardProps) => {
   const { wsRef, color, error, moves, fen, setMove } = useWebSocket({id, username });
   const [board, setBoard] = useState<BoardType>(initialBoard());
   const [highlightedSquares, setHighlightedSquares] = useState<string[]>([]);
-  const [blackFilteredMoves, setBlackFilteredMoves] = useState<PieceMove[]>([]);
-  const [whiteFilteredMoves, setWhiteFilteredMoves] = useState<PieceMove[]>([]);
-
-  useEffect(() => {
-    if (Array.isArray(moves)) {
-      setBlackFilteredMoves(moves.filter(m => m.color && m.color.toLowerCase() === "black"));
-      setWhiteFilteredMoves(moves.filter(m => m.color && m.color.toLowerCase() === "white"));
-    } else {
-      setBlackFilteredMoves([]);
-      setWhiteFilteredMoves([]);
-    }
-  }, [moves]);
-
+  
   // WebSocket connection is auto-initialized by useWebSocket
   useEffect(() => {
     console.log("Moves array:", moves);
@@ -157,7 +145,7 @@ const ChessBoard = ({id}: ChessBoardProps) => {
               board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} 
               highlightedSquares={highlightedSquares} 
               requestMoves={requestMoves} 
-              moves={blackFilteredMoves} 
+              moves={moves} 
               handleDragStart={handleDragStart} 
             />
           ) : color === "Black" ? (
@@ -165,7 +153,7 @@ const ChessBoard = ({id}: ChessBoardProps) => {
               board={Array.isArray(board) && Array.isArray(board[0]) ? board : initialBoard()} 
               highlightedSquares={highlightedSquares} 
               requestMoves={requestMoves} 
-              moves={whiteFilteredMoves} 
+              moves={moves} 
               handleDragStart={handleDragStart} 
             />
           ) : null}
@@ -186,7 +174,7 @@ const BoardWhite = ({ board, highlightedSquares, requestMoves, moves, handleDrag
         const isHighlighted = highlightedSquares && highlightedSquares.includes(notation);
         let legalMoves: string[] = [];
         if (moves && Array.isArray(moves)) {
-          const found = moves.find(m => m && m.piece === notation);
+          const found = moves.find(m => m && m.piece === notation && m.color && m.color.toLowerCase() === "black");
           legalMoves = found && Array.isArray(found.moves) ? found.moves : [];
         }
         return (
@@ -209,7 +197,7 @@ const BoardBlack = ({ board, highlightedSquares, requestMoves, moves, handleDrag
         const isHighlighted = highlightedSquares.includes(notation);
         let legalMoves: string[] = [];
         if (moves && Array.isArray(moves)) {
-          const found = moves.find(m => m && m.piece === notation);
+          const found = moves.find(m => m && m.piece === notation && m.color && m.color.toLowerCase() === "white");
           legalMoves = found && Array.isArray(found.moves) ? found.moves : [];
         }
         return (
