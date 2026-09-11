@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import WindowIcon from "../windows/WindowIcon";
-import { Columns2, Folder, House, NotepadText } from "lucide-react";
+import { Columns2, Folder, House, NotepadText, Globe, ChessPawn } from "lucide-react";
 import WindowSearch from "../windows/WindowSearch";
 
 type WindowScreenProps = {
@@ -14,6 +14,9 @@ type WindowScreenProps = {
   clickedChessIcon: () => void;
   chessOpen: boolean;
   chessActive: boolean;
+  clickedBrowserIcon: () => void;
+  browserOpen?: boolean;
+  browserActive?: boolean;
 };
 
 export default function WindowScreen({
@@ -23,7 +26,13 @@ export default function WindowScreen({
   notepadOpen,
   clickedFolderIcon,
   folderActive,
-  folderOpen
+  folderOpen,
+  clickedChessIcon,
+  chessOpen,
+  chessActive,
+  browserOpen,
+  browserActive,
+  clickedBrowserIcon
 }: WindowScreenProps) {
   return (
     <div className="relative w-full h-screen bg-black">
@@ -31,12 +40,14 @@ export default function WindowScreen({
       <div className="w-full h-full overflow-hidden">{children}</div>
 
     	{/* task bar */}
-      <div className="z-1000 absolute bottom-0 left-0 w-full h-fit justify-center bg-gray-800 text-white flex flex-row items-center px-4 border-t border-gray-600 gap-0.5">
+      <div className="z-[1000] absolute bottom-0 left-0 w-full h-fit justify-center bg-gray-800 text-white flex flex-row items-center px-4 border-t border-gray-600 gap-0.5">
         <WindowIcon Icon={House}></WindowIcon>
-				<WindowSearch></WindowSearch>
-				<WindowIcon Icon={Columns2}></WindowIcon>
-				<WindowIcon Icon={Folder} onClick={clickedFolderIcon} openState={folderOpen} activeState={folderActive}></WindowIcon>
-				<WindowIcon Icon={NotepadText} onClick={clickedNotepadIcon} openState={notepadOpen} activeState={notepadActive}></WindowIcon>
+        <WindowSearch></WindowSearch>
+        <WindowIcon Icon={Columns2}></WindowIcon>
+        <WindowIcon Icon={Globe} onClick={clickedBrowserIcon} openState={browserOpen} activeState={browserActive}></WindowIcon>
+        <WindowIcon Icon={Folder} onClick={clickedFolderIcon} openState={folderOpen} activeState={folderActive}></WindowIcon>
+        <WindowIcon Icon={NotepadText} onClick={clickedNotepadIcon} openState={notepadOpen} activeState={notepadActive}></WindowIcon>
+        <WindowIcon Icon={ChessPawn} onClick={clickedChessIcon} openState={chessOpen} activeState={chessActive}></WindowIcon>
       </div>
     </div>
   );

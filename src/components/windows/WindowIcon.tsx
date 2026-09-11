@@ -13,7 +13,6 @@ const WindowIcon: React.FC<WindowIconProps> = ({ Icon, onClick, openState, activ
 		<div className="">
 			<div
 				className="relative flex items-center justify-center cursor-pointer m-1 p-2.5 rounded-md hover:bg-gray-700 h-12 w-12"
-				onDoubleClick={onClick}
 				onClick={onClick}
 			>
 				<Icon className="h-15 w-15 text-white" />

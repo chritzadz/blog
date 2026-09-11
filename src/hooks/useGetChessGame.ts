@@ -1,7 +1,10 @@
 import { useQueryClient } from '@tanstack/react-query';
 
 async function fetchChessGame(id: string) {
-  const res = await fetch(`https://chess-production-b906.up.railway.app/api/game/id?id=${id}`);
+  const apiUrl = process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_CHESS_API_URL_PROD
+    : process.env.NEXT_PUBLIC_CHESS_API_URL;
+  const res = await fetch(`${apiUrl}/api/game/id?id=${id}`);
   if (!res.ok) throw new Error('Game not found');
   return await res.json();
 }
