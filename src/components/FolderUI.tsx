@@ -125,6 +125,7 @@ export default function FolderUI() {
             <>
               <FileItem name="Design and Analysis of Algorithm" href="/blogs/design-analysis-and-algorithm" type="file" icon={FileText} />
 							<FileItem name="Crafting Interpreter" href="/blogs/crafting-interpreter" type="file" icon={FileText} />
+							<FileItem name="Machine Learning" href="/blogs/machine-learning" type="file" icon={FileText} />
             </>
           )}
           {openProjectsFolder && (

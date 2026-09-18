@@ -1,3 +1,4 @@
+import katex from "katex";
 import type { ReactNode } from "react";
 
 import type {
@@ -40,6 +41,19 @@ async function CodeBlock({ code, lang }: { code: string; lang: string | null }) 
       className="my-4 overflow-x-auto rounded-lg text-sm [&_pre]:m-0 [&_pre]:p-4"
       dangerouslySetInnerHTML={{ __html: html }}
     />
+  );
+}
+
+function KatexMath({ value, display }: { value: string; display: boolean }) {
+  const html = katex.renderToString(value, {
+    displayMode: display,
+    throwOnError: false,
+    strict: false,
+  });
+  return display ? (
+    <div className="my-4 overflow-x-auto" dangerouslySetInnerHTML={{ __html: html }} />
+  ) : (
+    <span dangerouslySetInnerHTML={{ __html: html }} />
   );
 }
 
@@ -93,6 +107,8 @@ function renderPhrasing(node: PhrasingContent, key: number, slugger: GithubSlugg
       return (
         <span key={key} dangerouslySetInnerHTML={{ __html: (node as Html).value }} />
       );
+    case "inlineMath":
+      return <KatexMath key={key} value={node.value} display={false} />;
     default:
       return null;
   }
@@ -188,6 +204,8 @@ function renderBlock(node: Content, key: string, slugger: GithubSlugger): ReactN
     }
     case "thematicBreak":
       return <hr key={key} className="my-8 border-gray-300 dark:border-gray-700" />;
+    case "math":
+      return <KatexMath key={key} value={node.value} display />;
     default:
       console.warn("[blog] unhandled markdown node:", (node as { type: string }).type);
       return null;
