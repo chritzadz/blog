@@ -45,16 +45,27 @@ async function CodeBlock({ code, lang }: { code: string; lang: string | null }) 
 }
 
 function KatexMath({ value, display }: { value: string; display: boolean }) {
-  const html = katex.renderToString(value, {
-    displayMode: display,
-    throwOnError: false,
-    strict: false,
-  });
-  return display ? (
-    <div className="my-4 overflow-x-auto" dangerouslySetInnerHTML={{ __html: html }} />
-  ) : (
-    <span dangerouslySetInnerHTML={{ __html: html }} />
-  );
+  let html: string | null = null;
+  try {
+    html = katex.renderToString(value, {
+      displayMode: display,
+      throwOnError: false,
+      strict: false,
+    });
+  } catch {
+    html = null;
+  }
+
+  const content =
+    html !== null ? (
+      <span dangerouslySetInnerHTML={{ __html: html }} />
+    ) : (
+      <code className="rounded bg-gray-200 px-1.5 py-0.5 text-[0.9em] dark:bg-gray-800">
+        {value}
+      </code>
+    );
+
+  return display ? <div className="my-4 overflow-x-auto">{content}</div> : content;
 }
 
 function renderInline(nodes: PhrasingContent[], slugger: GithubSlugger): ReactNode {
@@ -116,8 +127,14 @@ function renderPhrasing(node: PhrasingContent, key: number, slugger: GithubSlugg
 
 function renderBlock(node: Content, key: string, slugger: GithubSlugger): ReactNode {
   switch (node.type) {
-    case "paragraph":
-      return <p key={key} className="mt-4">{renderInline((node as Paragraph).children, slugger)}</p>;
+    case "paragraph": {
+      const paragraph = node as Paragraph;
+      const onlyChild = paragraph.children.length === 1 ? paragraph.children[0] : undefined;
+      if (onlyChild && onlyChild.type === "inlineMath") {
+        return <KatexMath key={key} value={onlyChild.value} display />;
+      }
+      return <p key={key} className="mt-4">{renderInline(paragraph.children, slugger)}</p>;
+    }
     case "blockquote": {
       const quote = node as Blockquote;
       return (
